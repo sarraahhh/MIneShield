@@ -1,33 +1,40 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Ionicons } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+        tabBarActiveTintColor: "#8B5E3B", // your warm brown color
+        tabBarStyle: { backgroundColor: "#FFF5E1" }, // your cream color
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="DashboardHome"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Dashboard",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home-outline" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="AlertsScreen"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "Alerts",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="notifications-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="Analytics-section.tsx"
+        options={{
+          title: "Analytics",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="stats-chart-outline" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>
