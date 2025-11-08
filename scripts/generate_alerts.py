@@ -1,6 +1,8 @@
-import csv, json, random, datetime
+import json
+import random
+import datetime
 
-# Telangana Open-Pit Mines
+
 MINES = [
     ("Kothagudem Open Cast Project", 17.5531, 80.6192, "Bhadradri Kothagudem"),
     ("Manuguru OCP", 17.8983, 80.8264, "Khammam"),
@@ -20,50 +22,104 @@ ALERT_TYPES = [
     "Equipment Overload",
 ]
 
+
+ALERT_MESSAGES = {
+    "Rockfall": "Loose rocks detected near the upper bench. Inspect slope stability immediately.",
+    "Slope Failure": "Ground movement detected on the south wall. Evacuate nearby area and assess risk.",
+    "Dust Hazard": "High dust levels detected. Reduce vehicle speed and use protective masks.",
+    "Heat Stress": "Surface temperature is high. Limit outdoor work and stay hydrated.",
+    "Flooding Risk": "Water buildup near pit floor detected. Activate drainage pumps.",
+    "Equipment Overload": "Excessive vibration detected in machinery. Stop and inspect equipment."
+}
+
+
+
+def ai_model_predict(sensor_data):
+    """
+    Simulates an AI model's hazard prediction based on environmental data.
+    Uses simple threshold logic + probabilistic noise for realism.
+    """
+
+    temp = sensor_data["temperature_c"]
+    dust = sensor_data["dust_index"]
+    vib = sensor_data["vibration_level"]
+    rain = sensor_data["rainfall_mm"]
+
+    
+    if vib > 0.75 or (dust > 160 and temp > 38):
+        risk = "High"
+    elif vib > 0.5 or dust > 130 or temp > 36 or rain > 30:
+        risk = "Medium"
+    else:
+        risk = "Low"
+
+    if risk == "High":
+        alert_type = random.choice(["Rockfall", "Slope Failure", "Equipment Overload"])
+    elif risk == "Medium":
+        alert_type = random.choice(["Dust Hazard", "Heat Stress"])
+    else:
+        alert_type = random.choice(["Flooding Risk", "Dust Hazard"])
+
+   
+    confidence = 60 + int(
+        min(40, (vib * 30) + ((dust - 100) / 2) * 0.2 + ((temp - 30) * 1.2))
+    )
+    confidence = max(60, min(confidence, 99))  
+
+    message = ALERT_MESSAGES[alert_type]
+
+    return {
+        "alert_type": alert_type,
+        "risk_level": risk,
+        "confidence": confidence,
+        "message": message,
+    }
+
+
 def generate_alerts(n=40):
     alerts = []
     for i in range(1, n + 1):
         mine, lat, lon, district = random.choice(MINES)
-        alert_type = random.choice(ALERT_TYPES)
-        risk_level = random.choices(["Low", "Medium", "High"], weights=[0.3, 0.45, 0.25])[0]
-        confidence = random.randint(60, 95)
+
+       
         temperature = round(random.uniform(30, 45), 1)
         dust_index = random.randint(70, 180)
         vibration = round(random.uniform(0.2, 0.9), 2)
         rainfall = random.randint(0, 50)
-        timestamp = (datetime.datetime.utcnow() - datetime.timedelta(minutes=random.randint(0, 120))).isoformat() + "Z"
 
-        msg_templates = {
-            "Rockfall": "Loose rocks detected near upper bench area; advise slope check.",
-            "Slope Failure": "Ground movement detected on south pit wall; potential slide risk.",
-            "Dust Hazard": "Dust levels above safe limit; visibility may reduce for drivers.",
-            "Heat Stress": "Surface heat high; limit crew exposure near haul road.",
-            "Flooding Risk": "Rain accumulation near pit floor; drainage pumps recommended.",
-            "Equipment Overload": "Machinery vibration above threshold; inspect excavator joints."
+        sensor_data = {
+            "temperature_c": temperature,
+            "dust_index": dust_index,
+            "vibration_level": vibration,
+            "rainfall_mm": rainfall,
         }
 
-        message = msg_templates[alert_type]
+        prediction = ai_model_predict(sensor_data)
 
-        alerts.append({
+        timestamp = (
+            datetime.datetime.utcnow()
+            - datetime.timedelta(minutes=random.randint(0, 120))
+        ).isoformat() + "Z"
+
+        alert = {
             "id": i,
             "mine_name": mine,
             "district": district,
             "latitude": lat,
             "longitude": lon,
-            "alert_type": alert_type,
-            "risk_level": risk_level,
-            "confidence": confidence,
-            "temperature_c": temperature,
-            "dust_index": dust_index,
-            "vibration_level": vibration,
-            "rainfall_mm": rainfall,
+            **sensor_data,
+            **prediction,
             "timestamp": timestamp,
-            "message": message
-        })
+        }
+
+        alerts.append(alert)
+
     return alerts
 
+
+# --- Save output JSON file ---
 if __name__ == "__main__":
     data = generate_alerts()
     with open("../data/mine_alerts_telangana_openpit.json", "w") as f:
         json.dump(data, f, indent=2)
-    print("✅ mine_alerts_telangana_openpit.json updated with fresh alerts!")
+    print("✅ mine_alerts_telangana_openpit.json updated with AI-predicted alerts!")
