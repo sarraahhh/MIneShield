@@ -6,8 +6,8 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#8B5E3B", // your warm brown color
-        tabBarStyle: { backgroundColor: "#FFF5E1" }, // your cream color
+        tabBarActiveTintColor: "#8B5E3B", 
+        tabBarStyle: { backgroundColor: "#FFF5E1" }, 
       }}
     >
       <Tabs.Screen
@@ -29,7 +29,7 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="Analytics-section.tsx"
+        name="Analytics-section"
         options={{
           title: "Analytics",
           tabBarIcon: ({ color, size }) => (

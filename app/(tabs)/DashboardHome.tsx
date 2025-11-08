@@ -1,4 +1,4 @@
-import { Activity, ChevronRight, Clock, Maximize2, Search, Shield, TrendingDown } from "lucide-react-native";
+import { Activity, Clock, Maximize2, Search, Shield, TrendingDown } from "lucide-react-native";
 import React, { useMemo, useState } from "react";
 import { Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, useColorScheme, View } from "react-native";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
@@ -19,7 +19,7 @@ export function DashboardHome({ isDarkMode: propIsDarkMode }: DashboardHomeProps
   const [selected, setSelected] = useState<AlertItem | null>(null);
   const [onlyHigh, setOnlyHigh] = useState<boolean>(false);
 
-  // filter + sort newest first
+  
   const alerts = useMemo(() => {
     const q = query.trim().toLowerCase();
     const filtered = (mineAlerts as AlertItem[])
@@ -92,7 +92,7 @@ export function DashboardHome({ isDarkMode: propIsDarkMode }: DashboardHomeProps
           <Text style={[styles.statLabel, { color: isDarkMode ? '#94a3b8' : '#64748b' }]}>
             Active Mines
           </Text>
-          <Text style={styles.statSubtext}>Demo data — Telangana</Text>
+          <Text style={styles.statSubtext}>Telangana</Text>
         </View>
 
         {/* Current Risk Level */}
@@ -131,7 +131,7 @@ export function DashboardHome({ isDarkMode: propIsDarkMode }: DashboardHomeProps
           <Text style={[styles.statLabel, { color: isDarkMode ? '#94a3b8' : '#64748b' }]}>
             Last Incident
           </Text>
-          <Text style={[styles.statSubtext, { color: isDarkMode ? '#64748b' : '#64748b' }]}>ago</Text>
+          
         </View>
 
         {/* Safety Index */}
@@ -170,7 +170,7 @@ export function DashboardHome({ isDarkMode: propIsDarkMode }: DashboardHomeProps
     provider={PROVIDER_GOOGLE}
     style={{ flex: 1 }}
     initialRegion={{
-      latitude: 18.2,    // center of Telangana-ish
+      latitude: 18.2,    
       longitude: 80.0,
       latitudeDelta: 1.2,
       longitudeDelta: 1.2,
@@ -262,7 +262,7 @@ export function DashboardHome({ isDarkMode: propIsDarkMode }: DashboardHomeProps
         <ScrollView style={styles.alertsList}>
           {alerts.length === 0 ? (
             <Text style={{ color: isDarkMode ? '#94a3b8' : '#64748b' }}>No alerts found.</Text>
-          ) : alerts.map(a => (
+          ) : alerts.slice(0,10).map(a => (
             <TouchableOpacity
               key={a.id}
               onPress={() => setSelected(a)}
@@ -296,13 +296,7 @@ export function DashboardHome({ isDarkMode: propIsDarkMode }: DashboardHomeProps
         </ScrollView>
       </View>
 
-      {/* Mine Site Alpha Button */}
-      <TouchableOpacity style={[styles.mineSiteButton, cardStyle]}>
-        <Text style={[styles.mineSiteText, { color: isDarkMode ? '#cbd5e1' : '#334155' }]}>
-          Mine Site Alpha
-        </Text>
-        <ChevronRight size={20} color={isDarkMode ? '#94a3b8' : '#64748b'} />
-      </TouchableOpacity>
+     
 
       {/* AI Status Card */}
       <View style={[styles.aiCard, isDarkMode ? styles.aiCardDark : styles.aiCardLight]}>
@@ -445,6 +439,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     padding: 16,
     paddingBottom: 24,
+    paddingTop:70,
   },
   searchSection: {
     marginTop: 16,
@@ -457,6 +452,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 10,
+   
   },
   searchIcon: {
     marginRight: 8,
@@ -677,18 +673,7 @@ const styles = StyleSheet.create({
     color: '#94a3b8',
     marginTop: 4,
   },
-  mineSiteButton: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderRadius: 16,
-    borderWidth: 1,
-    padding: 16,
-    marginBottom: 20,
-  },
-  mineSiteText: {
-    fontSize: 14,
-  },
+
   aiCard: {
     borderRadius: 16,
     borderWidth: 1,

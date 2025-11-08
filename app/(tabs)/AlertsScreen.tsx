@@ -23,7 +23,7 @@ type AlertItem = typeof mineAlerts extends (infer T)[] ? T : any;
 export default function AlertsScreen() {
   const isDarkMode = useColorScheme() === "dark";
 
-
+  
   const alerts = useMemo(() => {
     return (mineAlerts as AlertItem[]).map((a, i) => ({
       id: a.id ?? i,
@@ -59,7 +59,7 @@ export default function AlertsScreen() {
           styles.container,
           { backgroundColor: isDarkMode ? "#0f172a" : "#f8fafc" },
         ]}
-        contentContainerStyle={{ padding: 16, paddingBottom: 90 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 90 , paddingTop:90}}
       >
         {/* Header */}
         <Text style={[styles.header, { color: isDarkMode ? "#fff" : "#0f172a" }]}>
@@ -72,7 +72,7 @@ export default function AlertsScreen() {
         </Text>
 
         {/* Alerts List */}
-        {alerts.map((a) => {
+        {alerts.slice(0,6).map((a) => {
           const borderColor =
             a.severity === "high"
               ? "#ef4444"
